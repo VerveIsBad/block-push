@@ -65,12 +65,7 @@ def create_grid(rows = 7, collums = 9):
     grid[goal.y][goal.x] = goal.icon # adds goal
     return grid
 
-def rainbow():
-    """
-    clears the terminal
-    Generates rainbow 'YOU WIN' text
-    clears the terminal
-    """
+def win_text():
     colors = {
         "red":31,
         "yellow":33,
@@ -79,18 +74,18 @@ def rainbow():
         "purple":35
     }
 
-    # Please optimize me Verve daddy UwU ~ ~
     e = ['red','yellow','green','blue','purple']
-    for i in range(10):
+
+    for i in range(4):
         clear()
-        print(f"\033[1;{colors.get(random.choice(e))};40m Y",end="")
-        print(f"\033[1;{colors.get(random.choice(e))};40m O",end="")
-        print(f"\033[1;{colors.get(random.choice(e))};40m U",end="")
+        print(f"\033[1;{colors.get(random.choice(e))};40mY",end="")
+        print(f"\033[1;{colors.get(random.choice(e))};40mO",end="")
+        print(f"\033[1;{colors.get(random.choice(e))};40mU",end="")
         print(f" ", end="")
-        print(f"\033[1;{colors.get(random.choice(e))};40m W",end="")
-        print(f"\033[1;{colors.get(random.choice(e))};40m I",end="")
-        print(f"\033[1;{colors.get(random.choice(e))};40m N",end="")
-        sleep(0.5)
+        print(f"\033[1;{colors.get(random.choice(e))};40mW",end="")
+        print(f"\033[1;{colors.get(random.choice(e))};40mI",end="")
+        print(f"\033[1;{colors.get(random.choice(e))};40mN",end="\n")
+        sleep(0.3)
 
 def check_win_status(box,goal):
     """
@@ -98,7 +93,7 @@ def check_win_status(box,goal):
     """
     if box.x == goal.x and box.y == goal.y:
         clear()
-        rainbow()   
+        win_text()   
         print()
         sys.exit()   
 
