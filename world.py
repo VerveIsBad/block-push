@@ -6,16 +6,13 @@ import random
 from time import sleep
 
 # Randomizes box coordinates
-ranX = random.randint(1,5)
-ranY = random.randint(1,5)
+ranY = 0
+ranX = 0
 
  # Creates a instance of PLAYER and BOX
 player = Person()
 box = Person(ranX,ranY)
 
-# randomizes again
-ranX = random.randint(1,5)
-ranY = random.randint(1,5)
 
 # Creates a instance of the GOAL
 goal = Person(ranX,ranY)
@@ -41,12 +38,12 @@ def create_grid(rows = 7, collums = 9):
         player.y = rows // 2
         player.x = collums // 2
     else:
-        player.y = Cplayer
-        player.x = Cplayer
+        player.y = random.randint(1,rows)
+        player.x = random.randint(1, collums)
 
-    # [2,4] == center of default grid
 
-    grid = []
+    grid = [] # defines grid 
+
     for i in range(rows): # creates grid * rows
         grid.append([])
         for j in range(collums): # creates grid * collums
@@ -60,10 +57,33 @@ def create_grid(rows = 7, collums = 9):
             else:
                 grid[i].append(2)
 
+    create_play_state(grid)
+
+    return grid
+
+def create_play_state(grid, rows = 7, collums = 9):
+    """
+    Creates the play state.
+    Coding is stupid. Fuck my life.
+    """
+
+    box.x = random.randint(1, collums-1)
+    box.y = random.randint(1,rows-1)
+
+    goal.y = random.randint(1, rows-1)
+    goal.x = random.randint(1, collums-1)
+
+    grid[player.y][player.x] = player.icon
+
+    if box.y == player.y and box.x == player.x or player.y == goal.y and player.x == goal.x or box.x == goal.x and goal.y == box.y:
+        create_play_state(grid)
+    else:
+        pass
+
     grid[player.y][player.x] = player.icon # adds player
     grid[box.y][box.x] = box.icon # adds box
     grid[goal.y][goal.x] = goal.icon # adds goal
-    return grid
+
 
 def win_text():
     colors = {
@@ -174,7 +194,7 @@ def move_player(grid, rows = 7, collums = 9, Debug = False):
 
     elif user_move == "stop":
         sys.exit()
-    elif Debug == True:
+    elif Debug == True or user_move == "Start debug":
         # UwU You want to see the raw Positons ~ You sussy baka ~
         print(f"PLAYER COORDS, Y:{player.y} X:{player.x}")
         print(f"BOX COORDS, Y:{box.y} X:{box.x}")
