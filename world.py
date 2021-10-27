@@ -10,22 +10,21 @@ ranY = 0
 ranX = 0
 
  # Creates a instance of PLAYER and BOX
-player = Person()
+player = Person(None,None,"⊠")
 box = Person(ranX,ranY)
-
 
 # Creates a instance of the GOAL
 goal = Person(ranX,ranY)
 
-box.icon = "box_icon"
-goal.icon = "goal_icon"
-
+box.icon = "▣"
+goal.icon = "▢"
 
 def clear():
     """
     Clears the terminal.
     """
     call('clear' if os.name =='posix' else 'cls')
+
 
 
 def create_grid(rows = 7, collums = 9):
@@ -40,7 +39,7 @@ def create_grid(rows = 7, collums = 9):
     else:
         player.y = random.randint(1,rows)
         player.x = random.randint(1, collums)
-
+    # \033[1;36;40m
 
     grid = [] # defines grid 
 
@@ -53,9 +52,9 @@ def create_grid(rows = 7, collums = 9):
             - Aheryon the floofy boi 
             """
             if i == 0 or j == 0 or i == rows-1 or j == collums - 1:
-                grid[i].append(0)
+                grid[i].append("▦")
             else:
-                grid[i].append(2)
+                grid[i].append(" ")
 
     create_play_state(grid)
 
@@ -73,17 +72,14 @@ def create_play_state(grid, rows = 7, collums = 9):
     goal.y = random.randint(1, rows-1)
     goal.x = random.randint(1, collums-1)
 
-    grid[player.y][player.x] = player.icon
-
     if box.y == player.y and box.x == player.x or player.y == goal.y and player.x == goal.x or box.x == goal.x and goal.y == box.y:
         create_play_state(grid)
     else:
         pass
 
-    grid[player.y][player.x] = player.icon # adds player
-    grid[box.y][box.x] = box.icon # adds box
-    grid[goal.y][goal.x] = goal.icon # adds goal
-
+    grid[player.y][player.x] = f"\033[1;36;40m{player.icon}\033[0m"
+    grid[box.y][box.x] = f"\033[1;31;40m{box.icon}\033[0m" # adds box
+    grid[goal.y][goal.x] = f"\033[1;34;40m{goal.icon}\033[0m" # adds goal
 
 def win_text():
     colors = {
@@ -96,7 +92,7 @@ def win_text():
 
     e = ['red','yellow','green','blue','purple']
 
-    for i in range(4):
+    for i in range(6):
         clear()
         print(f"\033[1;{colors.get(random.choice(e))};40mY",end="")
         print(f"\033[1;{colors.get(random.choice(e))};40mO",end="")
@@ -105,7 +101,7 @@ def win_text():
         print(f"\033[1;{colors.get(random.choice(e))};40mW",end="")
         print(f"\033[1;{colors.get(random.choice(e))};40mI",end="")
         print(f"\033[1;{colors.get(random.choice(e))};40mN",end="\n")
-        sleep(0.3)
+        sleep(0.2)
 
 def check_win_status(box,goal):
     """
@@ -117,36 +113,13 @@ def check_win_status(box,goal):
         print()
         sys.exit()   
 
-def display(grid, rows = 7, collums = 9):
+def display(grid):
     """
     Displays the grid.
     """ 
     clear()
-    pl="⊠"  # You may think these variables are usless 
-    bo="▣" # and you would be right
-    go="▢" # but If i remove them the function breaks
-    sp=" "  # so here it stays 
-    wall="▦" # >~>
-    for i in range(rows): 
-        for j in range(collums):
-            """
-            When in dought, piss about.
-            - random person from twitter 
-            """
-            if grid[i][j] == player.icon: # looks or player
-                print(f"\033[1;36;40m{pl}", end=" ") 
-            elif grid[i][j] == box.icon: # looks or box
-                print(f"\033[1;31;40m{bo}", end=" ")
-            elif grid[i][j] == goal.icon: # looks or goal
-                print(f"\033[1;34;40m{go}", end = " ")
-            elif i == 0 or j == 0 or i == rows-1 or j == collums - 1: # looks for edge peices
-                print(f"\033[1;35;40m{wall}", end=" ")
-            elif not i == 0 or j == 0 or i == rows-1 or j == collums - 1: # finds clear space
-                print(f"{sp}", end=" ")
-            else:
-                print("error")
-                sys.exit()
-        print()
+    for line in grid:
+        print(' '.join(map(str,line)))
 
 def move_player(grid, rows = 7, collums = 9, Debug = False):
     """
@@ -157,8 +130,8 @@ def move_player(grid, rows = 7, collums = 9, Debug = False):
     Displays grid.
     """
     user_move = input("Direction (w,a,s,d)\n")
-    grid[player.y][player.x] = 0 # sets old player coords to 0
-    grid[box.y][box.x] = 0 # I dont remember why i have to do this but i have to.
+    grid[player.y][player.x] = " " # sets old player coords to 0
+    grid[box.y][box.x] = " " # I dont remember why i have to do this but i have to.
     
     if user_move == "w": # updates player coords based on input.
         player.y -= 1
@@ -211,9 +184,9 @@ def move_player(grid, rows = 7, collums = 9, Debug = False):
         Goes past the grid.
         """
         try: # UwU Whats this~? Oh its your error handling ~~  
-            grid[player.y][player.x] = player.icon 
-            # adds player to grid with updated position 
-            grid[box.y][box.x] = box.icon
+            # adds player and box to grid with updated position 
+            grid[player.y][player.x] = f"\033[1;36;40m{player.icon}\033[0m"
+            grid[box.y][box.x] = f"\033[1;31;40m{box.icon}\033[0m" # adds box
             check_win_status(box, goal) 
             updating = False 
         except IndexError: # i-its so big~~
