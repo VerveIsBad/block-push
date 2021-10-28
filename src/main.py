@@ -1,13 +1,16 @@
-import person
-from tile import Tile
-import tiles
-import random
-from world import World
 import sys
 import os
+import random
 from subprocess import call
+from time import sleep
+
+import person
+import tiles
+from tile import Tile
+from world import World
+
 import click
-from time import sleep 
+
 """
 create grid 
 add player to grid
@@ -16,6 +19,7 @@ make player == none
 update player
 repeat but dont remake grid 
 """
+
 world = World()
 # Randomizes box coordinates
 ranY = 0
@@ -33,11 +37,11 @@ debug = False
 e = ['red','yellow','green','blue','purple']
 
 colors = {
-    "red":31,
-    "yellow":33,
-    "green":32,
-    "blue":34,
-    "purple":35
+    "red":    31,
+    "yellow": 33,
+    "green":  32,
+    "blue":   34,
+    "purple": 35
 }
 
 
