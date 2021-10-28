@@ -19,23 +19,16 @@ make player == none
 update player
 repeat but dont remake grid 
 """
-
+# ----Create instances---- #
 world = World()
-# Randomizes box coordinates
-ranY = 0
-ranX = 0
-# Creates a instance of PLAYER and BOX
 player = person.Player(None,None,"⊠")
-box = person.Box(ranX,ranY, "▣")
-# Creates a instance of the GOAL
-goal = person.Goal(ranX,ranY, "▢")
-
+box = person.Box(0,0, "▣")
+goal = person.Goal(0,0, "▢")
+# ----Create instances---- #
+# ----Basic variable declaration ---- #
 user_move = ""
-
 debug = False
-
 e = ['red','yellow','green','blue','purple']
-
 colors = {
     "red":    31,
     "yellow": 33,
@@ -43,7 +36,7 @@ colors = {
     "blue":   34,
     "purple": 35
 }
-
+# ----Basic variable declaration ---- #
 
 def create_play_state():
     """
@@ -52,21 +45,20 @@ def create_play_state():
     decides player position
     adds box and goal 
     """
-    rows = world.rows # gets grid size from world
-    collums = world.collums
 
-    if rows % 2 != 0 and collums % 2 != 0: # decides player pos
-        player.y = rows // 2
-        player.x = collums // 2
+
+    if world.rows % 2 != 0 and world.collums % 2 != 0: # decides player pos
+        player.y = world.rows // 2
+        player.x = world.collums // 2
     else:
-        player.y = random.randint(1,rows)
-        player.x = random.randint(1, collums)
+        player.y = random.randint(1,world.rows)
+        player.x = random.randint(1, world.collums)
     
-    box.x = random.randint(1, collums-1) # Randomize cordinates 
-    box.y = random.randint(1,rows-1) # for box and goal 
+    box.x = random.randint(1, world.collums-1) # Randomize cordinates 
+    box.y = random.randint(1,world.rows-1) # for box and goal 
     
-    goal.y = random.randint(1, rows-1)
-    goal.x = random.randint(1, collums-1)
+    goal.y = random.randint(1, world.rows-1)
+    goal.x = random.randint(1, world.collums-1)
     
     # checks for coordinate overlays 
     if box.y == player.y and box.x == player.x or player.y == goal.y and player.x == goal.x or box.x == goal.x and goal.y == box.y:
@@ -83,55 +75,66 @@ def check_win_status():
     """
     Checks for the win status
     """
-    if box.x == goal.x and box.y == goal.y:
+    if box.x == goal.x and box.y == goal.y: # IS box over Goal?
         world.clear()
         world.win_text()   
         print()
         sys.exit()   
 
-def reset_pos():
-    world.grid[player.y][player.x] = " " # adds player
-    world.grid[box.y][box.x] = " " # adds box
-
-def update_grid():
-    world.grid[player.y][player.x] = f"\033[1;36;10m{player.icon}\033[0m" # adds player
-    world.grid[box.y][box.x] = f"\033[1;31;10m{box.icon}\033[0m" # adds box
-
 def update_player():
+    """
+    Gets user input
+    updates player positions
+    checks for errors
+    """
     global debug 
     print("Direction (w,a,s,d)")
-    user_move = click.getchar() #get char
+    # this makes it so the user doesnt have to press enter to submit input
+    user_move = click.getchar() # it reads the char in the terminal
     world.grid[box.y][box.x] = " "
     world.grid[player.y][player.x] = " "
-
+   
+    # ---- UP ---- #
     if user_move == "w": # updates player coords based on input.
         player.y -= 1
-        if player.y == box.y and player.x == box.x: 
+        if player.y == box.y and player.x == box.x: # checks for collisions with player
             box.y -= 1
-        elif player.y == goal.y and player.x == goal.x:
+        elif player.y == goal.y and player.x == goal.x: # checks for collisions with player
             player.y += 1
+    
+    # ---- DOWN ---- #
     elif user_move == "s":
         player.y += 1
         if player.y == box.y and player.x == box.x:
             box.y += 1
         elif player.y == goal.y and player.x == goal.x:
             player.y -= 1
+
+    # ---- RIGHT ---- #
     elif user_move == "d":
         player.x += 1
         if player.y == box.y and player.x == box.x:
             box.x += 1
         elif player.y == goal.y and player.x == goal.x:
             player.x -= 1
+        
+    # ---- LEFT ---- #
     elif user_move == "a":
         player.x -= 1
         if player.y == box.y and player.x == box.x:
             box.x -= 1
         elif player.y == goal.y and player.x == goal.x:
             player.x += 1
+
+    # ---- QUIT ---- #
     elif user_move == "q":
         sys.exit("Exiting . . .")
+    
+    # ---- DEBUG ---- #
     elif user_move == "/" or user_move == "o":
         debug == True
+    
+    # ---- HELP ---- #
     elif user_move == "h":
         world.clear()
         print("h: prints the help screen\n /(o): starts debug\n wasd: movement commands\n q: quits the game. Press x to exit this screen")
@@ -139,18 +142,25 @@ def update_player():
         if ex == "x":
             world.clear()
             world.display(debug)
+    
+    # ---- ERROR ---- #
     else:
         print("Error")
-    
+     
+    # --- CHECKS FOR ERRORS ---- #
     updating = True
     while updating:
+        """
+        Attempts to update player position
+        and box positons
+        """
         try: # UwU Whats this~? Oh its your error handling ~~  
-            # adds player and box to grid with updated position 
+            # adds player and box to grid with updated position and color 
             world.grid[player.y][player.x] = f"\033[1;36;10m{player.icon}\033[0m"
             world.grid[box.y][box.x] = f"\033[1;31;10m{box.icon}\033[0m" # adds box
-            updating = False 
+            updating = False  # if it updates position, the loop stops
         except IndexError: # i-its so big~~
-            # POSSIBLE PLAYER COORDINATE ERRORS
+            # ---- POSSIBLE PLAYER COORDINATE ERRORS ---- #
             if player.y == world.rows:
                 player.y = 0
             elif player.y < 0:
@@ -159,7 +169,7 @@ def update_player():
                 player.x = 0
             elif player.x < 0:
                 player.x = world.collums - 1
-            # POSSIBLE BOX COORDINATE ERRORS
+            # ---- POSSIBLE BOX COORDINATE ERRORS ---- #
             elif box.y == world.rows:
                 box.y = 0
             elif box.y < 0:
@@ -170,10 +180,13 @@ def update_player():
                 box.x = world.collums - 1
             else:
                 print("error")   
+    
+    check_win_status() # checks win status automatically
 
 def quit_screen():
     for i in range(5):
-        world.clear()
+        world.clear() # clear screen
+        # randomizes colors 5 times for the below text
         # Thanks for coming!
         print(f"\033[1;{colors.get(random.choice(e))}10mT",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10mh",end="")
@@ -181,11 +194,11 @@ def quit_screen():
         print(f"\033[1;{colors.get(random.choice(e))}10mn",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10mk",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10ms",end="")
-        print(" ", end="")
+        print(" ", end="") # adds a space
         print(f"\033[1;{colors.get(random.choice(e))}10mf",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10mo",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10mr",end="")
-        print(" ", end="")
+        print(" ", end="") # adds a space
         print(f"\033[1;{colors.get(random.choice(e))}10mc",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10mo",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10mm",end="")
@@ -193,11 +206,12 @@ def quit_screen():
         print(f"\033[1;{colors.get(random.choice(e))}10mn",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10mg",end="")
         print(f"\033[1;{colors.get(random.choice(e))}10m!",end="")
-        time.sleep(0.3)
+        time.sleep(0.3) # pauses for 0.30 seconds
 
 def title_screen():
     """
     Title screen text
+    ask user if they want to start
     """
 
     global e
@@ -273,18 +287,18 @@ def start_game():
     print("(It represents the egde of the play space)")
     print("Your goal is to push the box into the goal...are you ready?\n")
     # ----INSTRUCTIONS----
+    
     play = input("(Y/N)\n").lower()
 
     if play == 'y':
-        world.clear()
-        create_play_state()
-        world.display()
+        world.clear() # clear the screen
+        create_play_state() # create play state
         while True:
-            reset_pos()
-            update_player()
-            world.clear()
-            check_win_status()
-            world.display(debug)
+                world.display() # dislays
+                update_player()
+                world.clear() # clear the screen
+                check_win_status()
+
     elif play == "n":
         world.clear()
         quit_screen()
