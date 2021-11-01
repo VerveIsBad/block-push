@@ -4,7 +4,7 @@ class Person:
     Anything that will be placed on the map
     is a instance of this class.
     """
-    def __init__(self, x=2, y=2, icon="icon"):
+    def __init__(self, x=2, y=2, icon="No icon given"):
         self.x = x
         self.y = y
         self.icon = icon
@@ -16,6 +16,16 @@ class Person:
         return self.y
     def __getitem__(self,icon):
         return str(self.icon)
+    def setX(self, x):
+        """
+        Set X
+        """
+        self.x = x
+    def setY(self, y):
+        """
+        set Y
+        """
+        self.y = y
 
 class Player(Person):
     pass
@@ -25,7 +35,6 @@ class Box(Person):
         pass
 
 class Goal(Person): 
-    
     def update_position(self):
         pass
 

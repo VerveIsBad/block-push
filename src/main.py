@@ -10,33 +10,44 @@ from tile import Tile
 from world import World
 
 import click
+from prompt_toolkit import print_formatted_text, HTML
 
-"""
-create grid 
-add player to grid
-display
-make player == none
-update player
-repeat but dont remake grid 
-"""
 # ----Create instances---- #
 world = World()
 player = person.Player(None,None,"⊠")
 box = person.Box(0,0, "▣")
 goal = person.Goal(0,0, "▢")
 # ----Create instances---- #
+
 # ----Basic variable declaration ---- #
 user_move = ""
 debug = False
-e = ['red','yellow','green','blue','purple']
-colors = {
-    "red":    31,
-    "yellow": 33,
-    "green":  32,
-    "blue":   34,
-    "purple": 35
-}
+colors = ['ansired','ansiyellow','ansigreen','ansiblue','ansipurple']
+random_color_hold = ""
 # ----Basic variable declaration ---- #
+
+
+
+def random_color():
+    """
+    Selects a random color 
+    From the list of colors
+    """
+    global random_color_hold
+    random_color_hold = random.choice(colors)
+    return random_color_hold
+
+def print_colored_text(text):
+    """
+    Prints colored text with random colors
+    text = Text to color.
+    """
+    global random_color_hold
+    builder = []
+    for c in text:
+        builder.append(f'<{random_color()}>{c}</{random_color_hold}>')
+    string = ''.join(builder)
+    print_formatted_text(HTML(string))
 
 def create_play_state():
     """
@@ -77,8 +88,10 @@ def check_win_status():
     """
     if box.x == goal.x and box.y == goal.y: # IS box over Goal?
         world.clear()
-        world.win_text()   
-        print()
+        for i in range(10):
+            world.clear()
+            print_colored_text("YOU WIN!!!") 
+            sleep(0.5)
         sys.exit()   
 
 def update_player():
@@ -184,29 +197,13 @@ def update_player():
     check_win_status() # checks win status automatically
 
 def quit_screen():
+    """
+    Quit screen text 
+    """
     for i in range(5):
         world.clear() # clear screen
-        # randomizes colors 5 times for the below text
-        # Thanks for coming!
-        print(f"\033[1;{colors.get(random.choice(e))}10mT",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mh",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10ma",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mn",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mk",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10ms",end="")
-        print(" ", end="") # adds a space
-        print(f"\033[1;{colors.get(random.choice(e))}10mf",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mo",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mr",end="")
-        print(" ", end="") # adds a space
-        print(f"\033[1;{colors.get(random.choice(e))}10mc",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mo",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mm",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mi",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mn",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10mg",end="")
-        print(f"\033[1;{colors.get(random.choice(e))}10m!",end="")
-        time.sleep(0.3) # pauses for 0.30 seconds
+        print_colored_text("Thanks for playing!")
+        sleep(0.3) # pauses for 0.30 seconds
 
 def title_screen():
     """
@@ -216,49 +213,23 @@ def title_screen():
 
     global e
     global colors
+    play = ""
     title = "Welcome to"
 
     world.clear() # "welcome to . . ."
-    print(f"{title} .")
-    sleep(1)
-    world.clear()
-    print(f"{title} . .")
-    sleep(1)
-    world.clear()
-    print(f"{title} . . .")
-    sleep(1)
+    for i in range(4):
+        world.clear()
+        print(f"{title}" + (" ."*i))
+        sleep(0.7)
     # UwU Knot me daddy ~
 
-    for i in range(9):  #  Bad colored text code. Very bad, extremely slow. 
+    for i in range(9): # Loops through coloes for title screen
         world.clear() # BLOCK PUSH
-
-        #
-        print(f"\033[1;{i + 30};10mB", end="")
-        print(f"\033[1;{i + 29};10mL", end="")
-        print(f"\033[1;{i + 28};10mO", end="")
-        print(f"\033[1;{i + 27};10mC", end="")
-        print(f"\033[1;{i + 26};10mK", end="")
-        print(" ", end="")
-        print(f"\033[1;{i + 25};10mP", end="")
-        print(f"\033[1;{i + 24};10mU", end="")
-        print(f"\033[1;{i + 23};10mS", end="")
-        print(f"\033[1;{i + 22};10mH\n", end="")
-        sleep(0.2)
-        print("\033[0m",end="")
-
-    play = ""
+        print_colored_text("BLOCK PUSH")
+        sleep(0.3)
+    
     # Start game?
-    print(f"\033[1;{random.choice(list(colors.values()))}10mS",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}10mt",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}10ma",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}10mr",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}10mt",end="")
-    print(" ",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}0mG",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}0ma",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}0mm",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}0me",end="")
-    print(f"\033[1;{random.choice(list(colors.values()))}0m?",end="")
+    print_colored_text("Start game?")
     print("\033[0m",end="")
     play = input("\n(Y/N)\n").lower()
 

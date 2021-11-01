@@ -14,7 +14,7 @@ class World:
         self.rows = rows
         self.collums = collums
     
-        
+        # matrix = [[1 if y == 0 or x == 0 or y == rows-1 or x == collums - 1 else 0 for y in range(rows)] for x in range(collums)]
         for y in range(rows): # creates grid * rows
             self.grid.append([])
             for x in range(collums) : # creates grid * collums
@@ -38,24 +38,6 @@ class World:
             
         for line in self.grid:
             print(' '.join(map(str,line)))
-
-    def win_text(self):
-        colors = {
-            "red":31,
-            "yellow":33,
-            "green":32,
-            "blue":34,
-            "purple":35
-        }
-
-        e = ['red','yellow','green','blue','purple']
-
-        for i in range(6):
-            self.clear()
-            print(f"\033[1;{colors.get(random.choice(e))};10mY\033[0m\033[1;{colors.get(random.choice(e))};10mo\033[0m\033[1;{colors.get(random.choice(e))};0mu\033[0m",end="")
-            print(f" ", end="") # \033[0m
-            print(F"\033[1;{colors.get(random.choice(e))};10mw\033[0m \033[1;{colors.get(random.choice(e))};10mi\033[0m \033[1;{colors.get(random.choice(e))};10mn\033[0m \033[1;{colors.get(random.choice(e))};10m!\033[0m")
-            time.sleep(0.2)
 
     def clear(self):
         """
