@@ -6,7 +6,7 @@ from subprocess import call
 
 class World:
 
-    def __init__(self, rows = 7, collums = 9):
+    def __init__(self, rows = 7, collums = 10):
         """
         Intializes the class.
         """
@@ -23,7 +23,7 @@ class World:
                 else:
                     self.grid[y].append(" ") # Not wall peice
                     
-    def display(self, debug = False):
+    def display(self,player,box,goal,debug = False):
         """
         Displays the grid.
         """ 

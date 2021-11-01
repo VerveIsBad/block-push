@@ -26,8 +26,6 @@ colors = ['ansired','ansiyellow','ansigreen','ansiblue','ansipurple']
 random_color_hold = ""
 # ----Basic variable declaration ---- #
 
-
-
 def random_color():
     """
     Selects a random color 
@@ -47,6 +45,14 @@ def print_colored_text(text):
     for c in text:
         builder.append(f'<{random_color()}>{c}</{random_color_hold}>')
     string = ''.join(builder)
+    """
+    One line alternative
+    ---------------------
+    def print_colored_text(text):
+        global random_color_hold
+        print_formatted_text(HTML(''.join(list(map(lambda c: f'<{random_color()}>{c}</{random_color_hold}>', text)))))
+
+    """
     print_formatted_text(HTML(string))
 
 def create_play_state():
@@ -62,14 +68,14 @@ def create_play_state():
         player.y = world.rows // 2
         player.x = world.collums // 2
     else:
-        player.y = random.randint(1,world.rows)
-        player.x = random.randint(1, world.collums)
+        player.y = random.randint(1,world.rows-2)
+        player.x = random.randint(1, world.collums-2)
     
-    box.x = random.randint(1, world.collums-1) # Randomize cordinates 
-    box.y = random.randint(1,world.rows-1) # for box and goal 
+    box.x = random.randint(2, world.collums-2) # Randomize cordinates 
+    box.y = random.randint(2,world.rows-2) # for box and goal 
     
-    goal.y = random.randint(1, world.rows-1)
-    goal.x = random.randint(1, world.collums-1)
+    goal.y = random.randint(2, world.rows-2)
+    goal.x = random.randint(2, world.collums-2)
     
     # checks for coordinate overlays 
     if box.y == player.y and box.x == player.x or player.y == goal.y and player.x == goal.x or box.x == goal.x and goal.y == box.y:
@@ -145,7 +151,7 @@ def update_player():
     
     # ---- DEBUG ---- #
     elif user_move == "/" or user_move == "o":
-        debug == True
+        debug = True
     
     # ---- HELP ---- #
     elif user_move == "h":
@@ -159,41 +165,34 @@ def update_player():
     # ---- ERROR ---- #
     else:
         print("Error")
-     
-    # --- CHECKS FOR ERRORS ---- #
-    updating = True
-    while updating:
-        """
-        Attempts to update player position
-        and box positons
-        """
-        try: # UwU Whats this~? Oh its your error handling ~~  
-            # adds player and box to grid with updated position and color 
-            world.grid[player.y][player.x] = f"\033[1;36;10m{player.icon}\033[0m"
-            world.grid[box.y][box.x] = f"\033[1;31;10m{box.icon}\033[0m" # adds box
-            updating = False  # if it updates position, the loop stops
-        except IndexError: # i-its so big~~
-            # ---- POSSIBLE PLAYER COORDINATE ERRORS ---- #
-            if player.y == world.rows:
-                player.y = 0
-            elif player.y < 0:
-                player.y = world.rows - 1
-            elif player.x == world.collums:
-                player.x = 0
-            elif player.x < 0:
-                player.x = world.collums - 1
-            # ---- POSSIBLE BOX COORDINATE ERRORS ---- #
-            elif box.y == world.rows:
-                box.y = 0
-            elif box.y < 0:
-                box.y = world.rows - 1
-            elif box.x == world.collums:
-                box.x = 0
-            elif box.x < 0:
-                box.x = world.collums - 1
-            else:
-                print("error")   
-    
+
+    # ---- STOPS THE PLAYER FROM LEAVING THE GRID ---- #
+    if player.y == world.rows:
+        player.y = 0
+    elif player.y < 0:
+        player.y = world.rows - 1
+    elif player.x == world.collums:
+        player.x = 0
+    elif player.x < 0:
+        player.x = world.collums - 1
+    # ---- STOPS THE PLAYER FROM LEAVING THE GRID ---- #
+
+    # --- STOPS THE BOX FROM LEAVING THE GRID ---- #
+    elif box.y == world.rows - 1:
+        box.y = 1
+    elif box.y < 1:
+        box.y = world.rows - 2
+    elif box.x == world.collums - 1:
+        box.x = 1
+    elif box.x < 1:
+        box.x = world.collums - 2
+    # --- STOPS THE BOX FROM LEAVING THE GRID ---- #
+    else:
+        print("error") 
+          
+    world.grid[player.y][player.x] = f"\033[1;36;10m{player.icon}\033[0m"
+    world.grid[box.y][box.x] = f"\033[1;31;10m{box.icon}\033[0m" # adds box
+    updating = False  # if it updates position, the loop stops    
     check_win_status() # checks win status automatically
 
 def quit_screen():
@@ -211,7 +210,6 @@ def title_screen():
     ask user if they want to start
     """
 
-    global e
     global colors
     play = ""
     title = "Welcome to"
@@ -265,10 +263,11 @@ def start_game():
         world.clear() # clear the screen
         create_play_state() # create play state
         while True:
-                world.display() # dislays
+                world.display(player,box,goal,debug) # dislays
                 update_player()
                 world.clear() # clear the screen
                 check_win_status()
+
 
     elif play == "n":
         world.clear()
