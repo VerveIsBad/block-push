@@ -29,7 +29,7 @@ random_color_hold = ""
 def random_color():
     """
     Selects a random color 
-    From the list of colors
+    from the list of colors
     """
     global random_color_hold
     random_color_hold = random.choice(colors)
@@ -58,24 +58,24 @@ def print_colored_text(text):
 def create_play_state():
     """
     Creates play state.
-    Gets rows and collums. 
+    Gets rows and columns. 
     decides player position
     adds box and goal 
     """
 
 
-    if world.rows % 2 != 0 and world.collums % 2 != 0: # decides player pos
+    if world.rows % 2 != 0 and world.columns % 2 != 0: # decides player pos
         player.y = world.rows // 2
-        player.x = world.collums // 2
+        player.x = world.columns // 2
     else:
         player.y = random.randint(1,world.rows-2)
-        player.x = random.randint(1, world.collums-2)
+        player.x = random.randint(1, world.columns-2)
     
-    box.x = random.randint(2, world.collums-2) # Randomize cordinates 
+    box.x = random.randint(2, world.columns-2) # Randomize cordinates 
     box.y = random.randint(2,world.rows-2) # for box and goal 
     
     goal.y = random.randint(2, world.rows-2)
-    goal.x = random.randint(2, world.collums-2)
+    goal.x = random.randint(2, world.columns-2)
     
     # checks for coordinate overlays 
     if box.y == player.y and box.x == player.x or player.y == goal.y and player.x == goal.x or box.x == goal.x and goal.y == box.y:
@@ -171,10 +171,10 @@ def update_player():
         player.y = 0
     elif player.y < 0:
         player.y = world.rows - 1
-    elif player.x == world.collums:
+    elif player.x == world.columns:
         player.x = 0
     elif player.x < 0:
-        player.x = world.collums - 1
+        player.x = world.columns - 1
     # ---- STOPS THE PLAYER FROM LEAVING THE GRID ---- #
 
     # --- STOPS THE BOX FROM LEAVING THE GRID ---- #
@@ -182,10 +182,10 @@ def update_player():
         box.y = 1
     elif box.y < 1:
         box.y = world.rows - 2
-    elif box.x == world.collums - 1:
+    elif box.x == world.columns - 1:
         box.x = 1
     elif box.x < 1:
-        box.x = world.collums - 2
+        box.x = world.columns - 2
     # --- STOPS THE BOX FROM LEAVING THE GRID ---- #
     else:
         print("error") 
@@ -221,7 +221,7 @@ def title_screen():
         sleep(0.7)
     # UwU Knot me daddy ~
 
-    for i in range(9): # Loops through coloes for title screen
+    for i in range(9): # Loops through colors for title screen
         world.clear() # BLOCK PUSH
         print_colored_text("BLOCK PUSH")
         sleep(0.3)
@@ -236,7 +236,7 @@ def title_screen():
     elif play == "n":
         quit_screen()            
     else:
-        print("Sorry, thats an invaid input!")
+        print("Sorry, thats an invalid input!")
 
 def start_game():
     """
@@ -254,7 +254,7 @@ def start_game():
     print("This is a wall => \033[1;35;10m▦")
     print("\033[0m",end="")
     print("(It represents the egde of the play space)")
-    print("Your goal is to push the box into the goal...are you ready?\n")
+    print("Your goal is to push the box into the goal... Are you ready?\n")
     # ----INSTRUCTIONS----
     
     play = input("(Y/N)\n").lower()

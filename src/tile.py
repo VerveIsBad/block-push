@@ -1,6 +1,6 @@
 class Tile:
     """
-    everything on the grid but
+    Everything on the grid but
     the player, box, and goal.
     """
     def __init__(self, icon = "▦"):
