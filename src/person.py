@@ -10,17 +10,21 @@ class Person:
         self.icon = icon
         self.last = []
 
+    # Getters
     def __getitem__(self, x):
         return self.x
     def __getitem__(self, y):
         return self.y
     def __getitem__(self,icon):
         return str(self.icon)
+
+
     def setX(self, x):
         """
         Set X
         """
         self.x = x
+
     def setY(self, y):
         """
         Set Y
