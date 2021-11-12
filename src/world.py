@@ -6,7 +6,7 @@ from subprocess import call
 
 class World:
 
-    def __init__(self, rows = 7, columns = 10):
+    def __init__(self, rows = 8, columns = 10):
         """
         Intializes the class.
         """
@@ -18,7 +18,7 @@ class World:
         for y in range(rows): # creates grid * rows
             self.grid.append([])
             for x in range(columns) : # creates grid * columns
-                if y == 0 or x == 0 or y == self.rows-1 or x == self.columns - 1: # Wall piece?
+                if y == 0 or x == 0 or y == self.rows-1 or x == self.columns-1: # Wall piece?
                     self.grid[y].append(tiles.wall.icon) 
                 else:
                     self.grid[y].append(" ") # Not wall peice
@@ -36,7 +36,7 @@ class World:
         else:
             print(f"Debug error. {debug}")
             
-        for line in self.grid:
+        for line in self.grid: # actual display code.
             print(' '.join(map(str,line)))
 
     def clear(self):

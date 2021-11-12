@@ -41,19 +41,8 @@ def print_colored_text(text):
     text = Text to color.
     """
     global random_color_hold
-    builder = []
-    for c in text:
-        builder.append(f'<{random_color()}>{c}</{random_color_hold}>')
-    string = ''.join(builder)
-    """
-    One line alternative
-    ---------------------
-    def print_colored_text(text):
-        global random_color_hold
-        print_formatted_text(HTML(''.join(list(map(lambda c: f'<{random_color()}>{c}</{random_color_hold}>', text)))))
+    print_formatted_text(HTML(''.join(list(map(lambda c: f'<{random_color()}>{c}</{random_color_hold}>', text)))))
 
-    """
-    print_formatted_text(HTML(string))
 
 def create_play_state():
     """
@@ -167,14 +156,14 @@ def update_player():
         print("Error")
 
     # ---- STOPS THE PLAYER FROM LEAVING THE GRID ---- #
-    if player.y == world.rows:
-        player.y = 0
-    elif player.y < 0:
-        player.y = world.rows - 1
-    elif player.x == world.columns:
-        player.x = 0
-    elif player.x < 0:
-        player.x = world.columns - 1
+    if player.y == world.rows - 1:
+        player.y = 1
+    elif player.y < 1:
+        player.y = world.rows - 2
+    elif player.x == world.columns - 1:
+        player.x = 1
+    elif player.x < 1:
+        player.x = world.columns - 2
     # ---- STOPS THE PLAYER FROM LEAVING THE GRID ---- #
 
     # --- STOPS THE BOX FROM LEAVING THE GRID ---- #
@@ -222,7 +211,7 @@ def title_screen():
     # UwU Knot me daddy ~
 
     for i in range(9): # Loops through colors for title screen
-        world.clear() # BLOCK PUSH
+        world.clear() 
         print_colored_text("BLOCK PUSH")
         sleep(0.3)
     
