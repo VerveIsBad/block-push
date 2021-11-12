@@ -23,7 +23,7 @@ class Person:
         self.x = x
     def setY(self, y):
         """
-        set Y
+        Set Y
         """
         self.y = y
 
